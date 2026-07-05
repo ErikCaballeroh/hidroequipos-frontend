@@ -1,8 +1,8 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 
-import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
@@ -15,7 +15,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { LayoutDashboardIcon, ListIcon, ChartBarIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, Settings2Icon, CircleHelpIcon, SearchIcon, DatabaseIcon, FileChartColumnIcon, FileIcon, CommandIcon } from "lucide-react"
+import {
+  BadgeDollarSignIcon,
+  CameraIcon,
+  ChartLineIcon,
+  CommandIcon,
+  FileTextIcon,
+  LayoutDashboardIcon,
+  Settings2Icon,
+  WarehouseIcon,
+} from "lucide-react"
 
 const data = {
   user: {
@@ -26,42 +35,30 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: (
-        <LayoutDashboardIcon
-        />
+        <LayoutDashboardIcon />
       ),
     },
     {
-      title: "Lifecycle",
-      url: "#",
+      title: "Ventas",
+      url: "/dashboard/sales",
       icon: (
-        <ListIcon
-        />
+        <BadgeDollarSignIcon />
       ),
     },
     {
-      title: "Analytics",
-      url: "#",
+      title: "Inventario",
+      url: "/dashboard/stock",
       icon: (
-        <ChartBarIcon
-        />
+        <WarehouseIcon />
       ),
     },
     {
-      title: "Projects",
-      url: "#",
+      title: "Analisis",
+      url: "/dashboard/analytics",
       icon: (
-        <FolderIcon
-        />
-      ),
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: (
-        <UsersIcon
-        />
+        <ChartLineIcon />
       ),
     },
   ],
@@ -69,8 +66,7 @@ const data = {
     {
       title: "Capture",
       icon: (
-        <CameraIcon
-        />
+        <CameraIcon />
       ),
       isActive: true,
       url: "#",
@@ -88,8 +84,7 @@ const data = {
     {
       title: "Proposal",
       icon: (
-        <FileTextIcon
-        />
+        <FileTextIcon />
       ),
       url: "#",
       items: [
@@ -106,8 +101,7 @@ const data = {
     {
       title: "Prompts",
       icon: (
-        <FileTextIcon
-        />
+        <FileTextIcon />
       ),
       url: "#",
       items: [
@@ -125,26 +119,9 @@ const data = {
   navSecondary: [
     {
       title: "Settings",
-      url: "#",
+      url: "/dashboard/settings",
       icon: (
-        <Settings2Icon
-        />
-      ),
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: (
-        <CircleHelpIcon
-        />
-      ),
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: (
-        <SearchIcon
-        />
+        <Settings2Icon />
       ),
     },
   ],
@@ -160,10 +137,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <a href="#">
+              <Link href="/dashboard">
                 <CommandIcon className="size-5!" />
                 <span className="text-base font-semibold">Hidroequipos y Albercas</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

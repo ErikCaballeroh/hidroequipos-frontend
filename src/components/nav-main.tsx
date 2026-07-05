@@ -1,6 +1,7 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { usePathname } from "next/navigation"
+import Link from "next/link"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -8,7 +9,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { CirclePlusIcon, MailIcon } from "lucide-react"
+import { CirclePlusIcon } from "lucide-react"
+
+function isItemActive(pathname: string, itemUrl: string) {
+  if (itemUrl === "/dashboard") {
+    return pathname === itemUrl
+  }
+
+  return pathname === itemUrl || pathname.startsWith(`${itemUrl}/`)
+}
 
 export function NavMain({
   items,
@@ -19,6 +28,8 @@ export function NavMain({
     icon?: React.ReactNode
   }[]
 }) {
+  const pathname = usePathname()
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -30,25 +41,22 @@ export function NavMain({
             >
               <CirclePlusIcon
               />
-              <span>Quick Create</span>
+              <span>Nuevo pedido</span>
             </SidebarMenuButton>
-            <Button
-              size="icon"
-              className="size-8 group-data-[collapsible=icon]:opacity-0"
-              variant="outline"
-            >
-              <MailIcon
-              />
-              <span className="sr-only">Inbox</span>
-            </Button>
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon}
-                <span>{item.title}</span>
+              <SidebarMenuButton
+                asChild
+                isActive={isItemActive(pathname, item.url)}
+                tooltip={item.title}
+              >
+                <Link href={item.url}>
+                  {item.icon}
+                  <span>{item.title}</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
