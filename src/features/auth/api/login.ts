@@ -7,7 +7,9 @@ import {
 } from '../schemas/login.schema'
 
 async function login(input: LoginInput): Promise<LoginResponse> {
-    const { data } = await apiClient.post('/auth/login', input)
+    // Endpoint according to your OpenAPI: /api/v1/users/login
+    const { data } = await apiClient.post('/api/v1/users/login', input)
+    console.log(data)
     return loginResponseSchema.parse(data)
 }
 
