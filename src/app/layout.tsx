@@ -2,6 +2,7 @@ import { QueryProvider } from '@/providers/query-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { Inter } from 'next/font/google';
 import './globals.css'
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const inter = Inter({
   weight: ['300', '400', '500', '700'], // Pesos que necesitas
@@ -16,7 +17,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" className={inter.className}>
       <body>
         <QueryProvider>
-          {children}
+          <TooltipProvider>
+            {children}
+          </TooltipProvider>
           <Toaster />
         </QueryProvider>
       </body>

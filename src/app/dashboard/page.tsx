@@ -1,49 +1,37 @@
-'use client'
+import { AppSidebar } from "@/components/app-sidebar"
+import { ChartAreaInteractive } from "@/components/chart-area-interactive"
+import { DataTable } from "@/components/data-table"
+import { SectionCards } from "@/components/section-cards"
+import { SiteHeader } from "@/components/site-header"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/features/auth/store/auth.store'
-import { useCurrentUserQuery } from '@/features/auth/api/session'
+import data from "./data.json"
 
-function mapUser(user: {
-    uuid?: string
-    id?: string
-    nombre?: string
-    name?: string
-    username?: string
-    email?: string
-}) {
-    return {
-        id: user.uuid ?? user.id ?? '',
-        name: user.nombre ?? user.name ?? user.username ?? '',
-        email: user.email ?? '',
-    }
-}
-
-export default function DashboardPage() {
-    const router = useRouter()
-    const setAuth = useAuthStore((state) => state.setAuth)
-    const logout = useAuthStore((state) => state.logout)
-    const { data, isLoading, isError } = useCurrentUserQuery()
-
-    useEffect(() => {
-        if (data) {
-            setAuth(mapUser(data))
-            return
-        }
-
-        if (!isLoading && isError) {
-            logout()
-            router.replace('/login')
-        }
-    }, [data, isLoading, isError, logout, router, setAuth])
-
-    if (isLoading || !data) return null
-
-    return (
-        <main className="p-8">
-            <h1 className="text-2xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">Bienvenido, aquí irá el contenido.</p>
-        </main>
-    )
+export default function Page() {
+  return (
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main flex flex-1 flex-col gap-2">
+            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+              <SectionCards />
+              <div className="px-4 lg:px-6">
+                <ChartAreaInteractive />
+              </div>
+              <DataTable data={data} />
+            </div>
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  )
 }
