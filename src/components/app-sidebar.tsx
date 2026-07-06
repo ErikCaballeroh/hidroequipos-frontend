@@ -24,6 +24,7 @@ import {
   LayoutDashboardIcon,
   Settings2Icon,
   WarehouseIcon,
+  WavesLadderIcon,
 } from "lucide-react"
 
 const data = {
@@ -138,7 +139,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <Link href="/dashboard">
-                <CommandIcon className="size-5!" />
+                <WavesLadderIcon className="size-5!" />
                 <span className="text-base font-semibold">Hidroequipos y Albercas</span>
               </Link>
             </SidebarMenuButton>
