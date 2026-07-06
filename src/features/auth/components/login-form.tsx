@@ -19,7 +19,8 @@ export function LoginForm() {
     const { mutate, isPending } = useLogin()
 
     const form = useForm<LoginInput>({
-        resolver: zodResolver(loginSchema),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        resolver: zodResolver(loginSchema as any),
         defaultValues: { username: '', password: '' },
     })
 
