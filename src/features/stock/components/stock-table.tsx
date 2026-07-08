@@ -15,7 +15,7 @@ export function StockTable() {
       <CardHeader>
         <CardTitle>Estado del Inventario</CardTitle>
         <CardDescription>
-          Detalle de productos, niveles de stock y variables del modelo matemático.
+          Detalle de productos y niveles de stock
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -50,7 +50,7 @@ export function StockTable() {
                     <TableCell className="text-right tabular-nums">{item.d}/día</TableCell>
                     <TableCell className="text-right tabular-nums">{item.ss}</TableCell>
                     <TableCell>
-                      <Badge 
+                      <Badge
                         variant={item.status === 'Óptimo' ? 'outline' : item.status === 'Reordenar' ? 'secondary' : 'destructive'}
                       >
                         {item.status}
