@@ -4,11 +4,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Mail } from "lucide-react"
+import { Check, Mail } from "lucide-react"
 import { useStockStore } from "@/features/stock/store/stock.store"
+import { useInventory, useReceiveRestock } from "@/features/stock/api/stock.api"
+import { toast } from "sonner"
 
 export function StockTable() {
-  const { inventoryData, openRestockModal } = useStockStore()
+  const { openRestockModal } = useStockStore()
+  const { data: inventoryData = [], isLoading } = useInventory()
+  const receiveMutation = useReceiveRestock()
+
+  const handleMarkReceived = (productId: string) => {
+    receiveMutation.mutate(productId, {
+      onSuccess: () => {
+        toast.success("Pedido marcado como recibido")
+      },
+      onError: () => {
+        toast.error("Error al actualizar el pedido")
+      }
+    })
+  }
 
   return (
     <Card>
@@ -19,7 +34,11 @@ export function StockTable() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {!inventoryData || inventoryData.length === 0 ? (
+        {isLoading ? (
+          <div className="flex h-32 items-center justify-center text-muted-foreground">
+            Cargando inventario...
+          </div>
+        ) : !inventoryData || inventoryData.length === 0 ? (
           <div className="flex h-32 items-center justify-center text-muted-foreground">
             No hay productos en el inventario
           </div>
@@ -51,16 +70,34 @@ export function StockTable() {
                     <TableCell className="text-right tabular-nums">{item.ss}</TableCell>
                     <TableCell>
                       <Badge
-                        variant={item.status === 'Óptimo' ? 'outline' : item.status === 'Reordenar' ? 'secondary' : 'destructive'}
+                        variant={item.has_pending_order || item.status === 'En Camino' ? 'default' : item.status === 'Óptimo' ? 'outline' : item.status === 'Reordenar' ? 'secondary' : 'destructive'}
+                        className={item.has_pending_order || item.status === 'En Camino' ? 'bg-blue-500 hover:bg-blue-600' : ''}
                       >
                         {item.status}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button size="sm" variant="outline" onClick={() => openRestockModal(item)}>
-                        <Mail className="size-4 mr-2" />
-                        Restock
-                      </Button>
+                      {item.has_pending_order ? (
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          className="bg-blue-500 hover:bg-blue-600"
+                          onClick={() => handleMarkReceived(item.id)}
+                          disabled={receiveMutation.isPending}
+                        >
+                          <Check className="size-4 mr-2" />
+                          Marcar Recibido
+                        </Button>
+                      ) : (
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => openRestockModal(item)}
+                        >
+                          <Mail className="size-4 mr-2" />
+                          Restock
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

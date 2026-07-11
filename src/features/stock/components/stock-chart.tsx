@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import { useStockStore } from "@/features/stock/store/stock.store"
+import { useInventory } from "@/features/stock/api/stock.api"
 import {
   ChartContainer,
   ChartTooltip,
@@ -22,7 +22,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function StockChart() {
-  const { inventoryData } = useStockStore()
+  const { data: inventoryData = [] } = useInventory()
 
   const chartData = inventoryData.map(item => ({
     name: item.name,

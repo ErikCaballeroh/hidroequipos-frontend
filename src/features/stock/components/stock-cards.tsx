@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { AlertCircle, ArrowDownToLine, Package, ShoppingCart } from "lucide-react"
-import { useStockStore } from "@/features/stock/store/stock.store"
+import { useInventory } from "@/features/stock/api/stock.api"
 
 export function StockCards() {
-  const { inventoryData } = useStockStore()
+  const { data: inventoryData = [] } = useInventory()
 
   const totalProducts = inventoryData.length
   const itemsToReorder = inventoryData.filter(item => item.stock <= item.rop && item.stock > item.rop * 0.5).length

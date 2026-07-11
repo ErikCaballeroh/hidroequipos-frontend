@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { useStockStore } from "@/features/stock/store/stock.store"
+import { useRestock } from "@/features/stock/api/stock.api"
 
 export function StockRestockModal() {
   const { 
@@ -16,13 +17,25 @@ export function StockRestockModal() {
     setRestockQuantity 
   } = useStockStore()
 
+  const restockMutation = useRestock()
+
   const handleConfirmRestock = () => {
     if (selectedItem) {
-      toast.success(`Solicitud enviada a ${selectedItem.supplier}`, {
-        description: <span className="text-foreground font-medium">Se han solicitado {restockQuantity} unidades de {selectedItem.name}.</span>,
+      restockMutation.mutate({
+        product_id: selectedItem.id,
+        quantity: restockQuantity,
+      }, {
+        onSuccess: () => {
+          toast.success(`Solicitud enviada a ${selectedItem.supplier}`, {
+            description: <span className="text-foreground font-medium">Se han solicitado {restockQuantity} unidades de {selectedItem.name}.</span>,
+          })
+          closeRestockModal()
+        },
+        onError: () => {
+          toast.error("Error al enviar la solicitud")
+        }
       })
     }
-    closeRestockModal()
   }
 
   return (
@@ -52,7 +65,9 @@ export function StockRestockModal() {
           </div>
         </div>
         <DialogFooter>
-          <Button type="button" onClick={handleConfirmRestock}>Enviar Solicitud</Button>
+          <Button type="button" onClick={handleConfirmRestock} disabled={restockMutation.isPending}>
+            {restockMutation.isPending ? "Enviando..." : "Enviar Solicitud"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -30,7 +30,7 @@ export function SystemSettingsCard() {
                     Estado actual: {enabled ? <span className="text-green-600">Activado</span> : <span className="text-muted-foreground">Desactivado</span>}
                 </p>
             </div>
-            
+
             <AlertDialog>
                 <AlertDialogTrigger asChild>
                     <Button variant={enabled ? "destructive" : "default"} className="mt-4 sm:mt-0">
@@ -41,9 +41,9 @@ export function SystemSettingsCard() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>¿Confirmas esta acción de seguridad?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            {enabled 
+                            {enabled
                                 ? "Se detendrán los pedidos automáticos de restock. Tendrás que hacer los pedidos manualmente."
-                                : "Al activar esta opción, el sistema realizará compras automáticamente cuando el stock llegue al nivel mínimo. Asegurate de tener los fondos suficientes y proveedores configurados."
+                                : "Al activar esta opción, el sistema realizará pedidos automáticamente cuando el stock llegue al nivel mínimo."
                             }
                         </AlertDialogDescription>
                     </AlertDialogHeader>
