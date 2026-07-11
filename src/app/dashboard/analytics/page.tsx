@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/site-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AnalyticsRangeSelector } from "@/features/analytics/components/analytics-range-selector"
 import { ProfitabilityTab } from "@/features/analytics/components/profitability-tab"
+import { CustomersTab } from "@/features/analytics/components/customers-tab"
 
 export default function AnalyticsPage() {
     return (
@@ -32,9 +33,7 @@ export default function AnalyticsPage() {
                     </TabsContent>
 
                     <TabsContent value="customers" className="mt-4">
-                        <p className="text-sm text-muted-foreground">
-                            Próximamente: top clientes, crédito y cuentas por cobrar.
-                        </p>
+                        <CustomersTab />
                     </TabsContent>
 
                     <TabsContent value="seasonality" className="mt-4">
