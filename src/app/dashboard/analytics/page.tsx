@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AnalyticsRangeSelector } from "@/features/analytics/components/analytics-range-selector"
 import { ProfitabilityTab } from "@/features/analytics/components/profitability-tab"
 import { CustomersTab } from "@/features/analytics/components/customers-tab"
+import { SeasonalityTab } from "@/features/analytics/components/seasonality-tab"
 
 export default function AnalyticsPage() {
     return (
@@ -37,9 +38,7 @@ export default function AnalyticsPage() {
                     </TabsContent>
 
                     <TabsContent value="seasonality" className="mt-4">
-                        <p className="text-sm text-muted-foreground">
-                            Próximamente: mapa de calor, ventas por mes y por día de la semana.
-                        </p>
+                        <SeasonalityTab />
                     </TabsContent>
                 </Tabs>
             </main>
