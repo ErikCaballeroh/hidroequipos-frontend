@@ -3,6 +3,7 @@
 import { SiteHeader } from "@/components/site-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AnalyticsRangeSelector } from "@/features/analytics/components/analytics-range-selector"
+import { ProfitabilityTab } from "@/features/analytics/components/profitability-tab"
 
 export default function AnalyticsPage() {
     return (
@@ -27,9 +28,7 @@ export default function AnalyticsPage() {
                     </TabsList>
 
                     <TabsContent value="profitability" className="mt-4">
-                        <p className="text-sm text-muted-foreground">
-                            Próximamente: márgenes, descuentos y productos más rentables.
-                        </p>
+                        <ProfitabilityTab />
                     </TabsContent>
 
                     <TabsContent value="customers" className="mt-4">
