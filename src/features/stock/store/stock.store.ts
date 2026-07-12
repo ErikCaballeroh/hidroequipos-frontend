@@ -31,6 +31,13 @@ export const useStockStore = create<StockState>((set) => ({
   setRestockQuantity: (quantity) => set({ restockQuantity: quantity }),
   isBulkRestockModalOpen: false,
   initialBulkItems: {},
-  openBulkRestockModal: (initialItems) => set({ isBulkRestockModalOpen: true, initialBulkItems: initialItems || {} }),
+  openBulkRestockModal: (initialItems) => {
+    // Prevent React Synthetic Events from being passed as initialItems
+    const isEvent = initialItems && typeof initialItems === 'object' && 'nativeEvent' in initialItems
+    set({ 
+      isBulkRestockModalOpen: true, 
+      initialBulkItems: isEvent ? {} : (initialItems || {}) 
+    })
+  },
   closeBulkRestockModal: () => set({ isBulkRestockModalOpen: false, initialBulkItems: {} }),
 }))

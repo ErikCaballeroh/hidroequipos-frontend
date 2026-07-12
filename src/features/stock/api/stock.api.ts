@@ -6,6 +6,8 @@ import {
   type StockFilters,
   type RestockPayload,
   type BulkRestockPayload,
+  type RestockConfigResponse,
+  type RestockConfigUpdate,
 } from '../schemas/stock.schema'
 import { z } from 'zod'
 
@@ -71,6 +73,37 @@ export function useReceiveRestock() {
     mutationFn: receiveRestock,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['stock', 'inventory'] })
+    },
+  })
+}
+
+async function getRestockConfig(branchId?: string): Promise<RestockConfigResponse> {
+  const { data } = await apiClient.get('/api/v1/stock/config', {
+    params: branchId ? { branch_id: branchId } : {},
+  })
+  return data
+}
+
+export function useRestockConfig(branchId?: string) {
+  return useQuery({
+    queryKey: ['stock', 'config', branchId],
+    queryFn: () => getRestockConfig(branchId),
+  })
+}
+
+async function updateRestockConfig(payload: RestockConfigUpdate, branchId?: string): Promise<RestockConfigResponse> {
+  const { data } = await apiClient.put('/api/v1/stock/config', payload, {
+    params: branchId ? { branch_id: branchId } : {},
+  })
+  return data
+}
+
+export function useUpdateRestockConfig(branchId?: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (payload: RestockConfigUpdate) => updateRestockConfig(payload, branchId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['stock', 'config', branchId] })
     },
   })
 }

@@ -8,14 +8,17 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Check, Mail } from "lucide-react"
 import { useStockStore } from "@/features/stock/store/stock.store"
-import { useInventory, useReceiveRestock } from "@/features/stock/api/stock.api"
+import { useInventory, useReceiveRestock, useRestockConfig } from "@/features/stock/api/stock.api"
 import { StockSelectionToolbar } from "@/features/stock/components/stock-selection-toolbar"
 import { toast } from "sonner"
 
 export function StockTable() {
   const { openRestockModal, openBulkRestockModal } = useStockStore()
   const { data: inventoryData = [], isLoading } = useInventory()
+  const { data: config } = useRestockConfig()
   const receiveMutation = useReceiveRestock()
+  
+  const isAutoRestockActive = config?.auto_restock_activo ?? false
 
   const [selectedRowIds, setSelectedRowIds] = useState<Set<string>>(new Set())
 
@@ -89,6 +92,7 @@ export function StockTable() {
                       checked={inventoryData.length > 0 && selectedRowIds.size === inventoryData.length}
                       onCheckedChange={toggleAll}
                       aria-label="Select all"
+                      disabled={isAutoRestockActive}
                     />
                   </TableHead>
                   <TableHead>Producto</TableHead>
@@ -110,6 +114,7 @@ export function StockTable() {
                         checked={selectedRowIds.has(item.id)}
                         onCheckedChange={() => toggleRow(item.id)}
                         aria-label={`Select ${item.name}`}
+                        disabled={isAutoRestockActive}
                       />
                     </TableCell>
                     <TableCell className="font-medium text-sm">{item.name}</TableCell>
@@ -144,6 +149,8 @@ export function StockTable() {
                           size="sm"
                           variant="outline"
                           onClick={() => openRestockModal(item)}
+                          disabled={isAutoRestockActive}
+                          title={isAutoRestockActive ? "Restock automático activado" : ""}
                         >
                           <Mail className="size-4 mr-2" />
                           Restock
@@ -159,11 +166,13 @@ export function StockTable() {
         </CardContent>
       </Card>
 
-      <StockSelectionToolbar
-        count={selectedRowIds.size}
-        onClear={() => setSelectedRowIds(new Set())}
-        onOrder={handleBulkOrder}
-      />
+      {!isAutoRestockActive && (
+        <StockSelectionToolbar
+          count={selectedRowIds.size}
+          onClear={() => setSelectedRowIds(new Set())}
+          onOrder={handleBulkOrder}
+        />
+      )}
     </>
   )
 }

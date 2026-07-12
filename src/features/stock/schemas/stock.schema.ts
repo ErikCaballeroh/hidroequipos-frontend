@@ -30,3 +30,14 @@ export interface BulkRestockPayload {
   items: RestockPayload[]
 }
 
+export interface RestockConfigResponse {
+  branch_id: string
+  auto_restock_activo: boolean
+  nivel_servicio: number
+  z_alpha: number
+}
+
+export interface RestockConfigUpdate {
+  auto_restock_activo: boolean
+}
+
