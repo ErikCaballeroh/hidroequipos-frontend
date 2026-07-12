@@ -10,6 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { CirclePlusIcon } from "lucide-react"
+import { useStockStore } from "@/features/stock/store/stock.store"
 
 function isItemActive(pathname: string, itemUrl: string) {
   if (itemUrl === "/dashboard") {
@@ -29,6 +30,7 @@ export function NavMain({
   }[]
 }) {
   const pathname = usePathname()
+  const { openBulkRestockModal } = useStockStore()
 
   return (
     <SidebarGroup>
@@ -38,6 +40,7 @@ export function NavMain({
             <SidebarMenuButton
               tooltip="Quick Create"
               className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+              onClick={openBulkRestockModal}
             >
               <CirclePlusIcon
               />

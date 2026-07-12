@@ -5,6 +5,7 @@ import {
   type InventoryItem,
   type StockFilters,
   type RestockPayload,
+  type BulkRestockPayload,
 } from '../schemas/stock.schema'
 import { z } from 'zod'
 
@@ -42,6 +43,22 @@ export function useRestock() {
     },
   })
 }
+
+async function requestBulkRestock(payload: BulkRestockPayload): Promise<{ message: string }> {
+  const { data } = await apiClient.post('/api/v1/stock/restock/bulk', payload)
+  return data
+}
+
+export function useBulkRestock() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: requestBulkRestock,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['stock', 'inventory'] })
+    },
+  })
+}
+
 
 async function receiveRestock(productId: string): Promise<{ message: string }> {
   const { data } = await apiClient.post(`/api/v1/stock/restock/${productId}/receive`)

@@ -25,3 +25,8 @@ export interface RestockPayload {
   product_id: string
   quantity: number
 }
+
+export interface BulkRestockPayload {
+  items: RestockPayload[]
+}
+

@@ -8,6 +8,11 @@ interface StockState {
   openRestockModal: (item: InventoryItem) => void
   closeRestockModal: () => void
   setRestockQuantity: (quantity: number) => void
+
+  isBulkRestockModalOpen: boolean
+  initialBulkItems?: Record<string, number>
+  openBulkRestockModal: (initialItems?: Record<string, number>) => void
+  closeBulkRestockModal: () => void
 }
 
 export const useStockStore = create<StockState>((set) => ({
@@ -24,4 +29,8 @@ export const useStockStore = create<StockState>((set) => ({
   },
   closeRestockModal: () => set({ isRestockModalOpen: false }),
   setRestockQuantity: (quantity) => set({ restockQuantity: quantity }),
+  isBulkRestockModalOpen: false,
+  initialBulkItems: {},
+  openBulkRestockModal: (initialItems) => set({ isBulkRestockModalOpen: true, initialBulkItems: initialItems || {} }),
+  closeBulkRestockModal: () => set({ isBulkRestockModalOpen: false, initialBulkItems: {} }),
 }))

@@ -1,8 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Check, Mail } from "lucide-react"
 import { useStockStore } from "@/features/stock/store/stock.store"
@@ -10,9 +12,40 @@ import { useInventory, useReceiveRestock } from "@/features/stock/api/stock.api"
 import { toast } from "sonner"
 
 export function StockTable() {
-  const { openRestockModal } = useStockStore()
+  const { openRestockModal, openBulkRestockModal } = useStockStore()
   const { data: inventoryData = [], isLoading } = useInventory()
   const receiveMutation = useReceiveRestock()
+
+  const [selectedRowIds, setSelectedRowIds] = useState<Set<string>>(new Set())
+
+  const toggleAll = () => {
+    if (selectedRowIds.size === inventoryData.length && inventoryData.length > 0) {
+      setSelectedRowIds(new Set())
+    } else {
+      setSelectedRowIds(new Set(inventoryData.map(i => i.id)))
+    }
+  }
+
+  const toggleRow = (id: string) => {
+    const newSet = new Set(selectedRowIds)
+    if (newSet.has(id)) {
+      newSet.delete(id)
+    } else {
+      newSet.add(id)
+    }
+    setSelectedRowIds(newSet)
+  }
+
+  const handleBulkOrder = () => {
+    const initialItems: Record<string, number> = {}
+    inventoryData.forEach(item => {
+      if (selectedRowIds.has(item.id)) {
+        initialItems[item.id] = Math.max(0, item.rop + item.ss - item.stock) || 1
+      }
+    })
+    openBulkRestockModal(initialItems)
+    setSelectedRowIds(new Set())
+  }
 
   const handleMarkReceived = (productId: string) => {
     receiveMutation.mutate(productId, {
@@ -27,11 +60,19 @@ export function StockTable() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Estado del Inventario</CardTitle>
-        <CardDescription>
-          Detalle de productos y niveles de stock
-        </CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div className="flex flex-col gap-1.5">
+          <CardTitle>Estado del Inventario</CardTitle>
+          <CardDescription>
+            Detalle de productos y niveles de stock
+          </CardDescription>
+        </div>
+        {selectedRowIds.size > 0 && (
+          <Button onClick={handleBulkOrder} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Mail className="mr-2 h-4 w-4" />
+            Pedir Seleccionados ({selectedRowIds.size})
+          </Button>
+        )}
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -47,6 +88,13 @@ export function StockTable() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[40px]">
+                    <Checkbox 
+                      checked={inventoryData.length > 0 && selectedRowIds.size === inventoryData.length}
+                      onCheckedChange={toggleAll}
+                      aria-label="Select all"
+                    />
+                  </TableHead>
                   <TableHead>Producto</TableHead>
                   <TableHead>Categoría</TableHead>
                   <TableHead>Proveedor</TableHead>
@@ -61,6 +109,13 @@ export function StockTable() {
               <TableBody>
                 {inventoryData.map((item) => (
                   <TableRow key={item.id}>
+                    <TableCell>
+                      <Checkbox 
+                        checked={selectedRowIds.has(item.id)}
+                        onCheckedChange={() => toggleRow(item.id)}
+                        aria-label={`Select ${item.name}`}
+                      />
+                    </TableCell>
                     <TableCell className="font-medium text-sm">{item.name}</TableCell>
                     <TableCell className="text-sm">{item.category}</TableCell>
                     <TableCell className="text-muted-foreground text-sm">{item.supplier}</TableCell>
