@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Check, Mail } from "lucide-react"
 import { useStockStore } from "@/features/stock/store/stock.store"
 import { useInventory, useReceiveRestock } from "@/features/stock/api/stock.api"
+import { StockSelectionToolbar } from "@/features/stock/components/stock-selection-toolbar"
 import { toast } from "sonner"
 
 export function StockTable() {
@@ -59,22 +60,17 @@ export function StockTable() {
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
+    <>
+      <Card>
+        <CardHeader>
         <div className="flex flex-col gap-1.5">
           <CardTitle>Estado del Inventario</CardTitle>
           <CardDescription>
             Detalle de productos y niveles de stock
           </CardDescription>
         </div>
-        {selectedRowIds.size > 0 && (
-          <Button onClick={handleBulkOrder} className="bg-blue-600 hover:bg-blue-700 text-white">
-            <Mail className="mr-2 h-4 w-4" />
-            Pedir Seleccionados ({selectedRowIds.size})
-          </Button>
-        )}
-      </CardHeader>
-      <CardContent>
+        </CardHeader>
+        <CardContent>
         {isLoading ? (
           <div className="flex h-32 items-center justify-center text-muted-foreground">
             Cargando inventario...
@@ -89,7 +85,7 @@ export function StockTable() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[40px]">
-                    <Checkbox 
+                    <Checkbox
                       checked={inventoryData.length > 0 && selectedRowIds.size === inventoryData.length}
                       onCheckedChange={toggleAll}
                       aria-label="Select all"
@@ -110,7 +106,7 @@ export function StockTable() {
                 {inventoryData.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>
-                      <Checkbox 
+                      <Checkbox
                         checked={selectedRowIds.has(item.id)}
                         onCheckedChange={() => toggleRow(item.id)}
                         aria-label={`Select ${item.name}`}
@@ -133,9 +129,9 @@ export function StockTable() {
                     </TableCell>
                     <TableCell className="text-right">
                       {item.has_pending_order ? (
-                        <Button 
-                          size="sm" 
-                          variant="default" 
+                        <Button
+                          size="sm"
+                          variant="default"
                           className="bg-blue-500 hover:bg-blue-600"
                           onClick={() => handleMarkReceived(item.id)}
                           disabled={receiveMutation.isPending}
@@ -144,9 +140,9 @@ export function StockTable() {
                           Marcar Recibido
                         </Button>
                       ) : (
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
+                        <Button
+                          size="sm"
+                          variant="outline"
                           onClick={() => openRestockModal(item)}
                         >
                           <Mail className="size-4 mr-2" />
@@ -160,7 +156,14 @@ export function StockTable() {
             </Table>
           </div>
         )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      <StockSelectionToolbar
+        count={selectedRowIds.size}
+        onClear={() => setSelectedRowIds(new Set())}
+        onOrder={handleBulkOrder}
+      />
+    </>
   )
 }
